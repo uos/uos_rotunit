@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="uos_rotunit_snapshotter" type="uos_rotunit_snapshotter"
+    name="uos_rotunit_snapshotter" output="screen">
+    <param name="continuous" value="true"/>
+    <param name="rotation_angle" value="0.78539816339" />
+  </node>
+</launch>

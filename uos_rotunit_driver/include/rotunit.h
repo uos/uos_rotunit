@@ -10,7 +10,7 @@
 #include <sensor_msgs/JointState.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/TwistStamped.h>
-#include <rotunit/RotVelSrv.h>
+#include <uos_rotunit_driver/RotVelSrv.h>
 
 #include <cmath>
 #include <cstdio>
@@ -32,8 +32,8 @@ class Rotunit
     void rotunitCallback(
       const geometry_msgs::Twist::ConstPtr& msg);
     bool rotunitRotVelSrv(
-      rotunit::RotVelSrv::Request &req,
-      rotunit::RotVelSrv::Response &res);
+      uos_rotunit_driver::RotVelSrv::Request &req,
+      uos_rotunit_driver::RotVelSrv::Response &res);
 
   private:
     sensor_msgs::JointState previous_state;
@@ -46,4 +46,4 @@ class Rotunit
     ros::NodeHandle nh_;
 };
 
-#endif /* Rotunit.h */
+#endif /* rotunit.h */

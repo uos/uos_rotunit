@@ -47,8 +47,8 @@ double Rotunit::normalize2PI (double angle)
 
 
 bool Rotunit::rotunitRotVelSrv(
-  rotunit::RotVelSrv::Request &req,
-  rotunit::RotVelSrv::Response &res){
+  uos_rotunit_driver::RotVelSrv::Request &req,
+  uos_rotunit_driver::RotVelSrv::Response &res){
   can_rotunit_send(req.twist.angular.z);  
   return true;
 }

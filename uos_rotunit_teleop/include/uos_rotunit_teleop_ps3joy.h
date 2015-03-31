@@ -90,6 +90,8 @@ class RotunitTeleopPS3Joy{
     double acc_;
     double vel_;
     double scan_vel_;
+    double max_vel_;
+    double timeout_;
     actionlib::SimpleActionClient<uos_rotunit_snapshotter::RotunitSnapshotAction> ac;
 };
 

@@ -29,12 +29,14 @@ RotunitTeleopPS3Joy::RotunitTeleopPS3Joy(ros::NodeHandle &nh)
     ac("rotunit_snapshotter", true),
     vel_(0)
 {
-  ROS_INFO("Waiting for the snapshotter action server to start.");
+  ROS_INFO("Waiting for the uos_rotunit_snapshotter action server to start.");
   ac.waitForServer(); 
-  ROS_INFO("Connected to server.");
+  ROS_INFO("Connected to uos_rotunit_snapshotter server.");
 
   nh_.param("acc", acc_, 0.01);           // acceleration
   nh_.param("scan_vel", scan_vel_, 0.6);  // velocity while scanning
+  nh_.param("max_vel", max_vel_, 1.3);    // maximum velocity
+  nh_.param("timeout", timeout_, 30.0);    // waiting time for a snapshot to be finished
   vel_pub_ = nh_.advertise<geometry_msgs::Twist>("rot_vel", 1);
   joy_sub_ = nh_.subscribe<sensor_msgs::Joy>("joy", 15,  &RotunitTeleopPS3Joy::PS3Callback, this);
   rot_vel_client_ = nh_.serviceClient<uos_rotunit_driver::RotVelSrv>("rotunit_velocity");
@@ -43,44 +45,55 @@ RotunitTeleopPS3Joy::RotunitTeleopPS3Joy(ros::NodeHandle &nh)
 void RotunitTeleopPS3Joy::PS3Callback(const sensor_msgs::Joy::ConstPtr &joy){
 
   uos_rotunit_driver::RotVelSrv rot_vel_srv;
+  
+  // handle uos_rotunit velocity 
+  // via ps3 buttons rear right 1 and 2
   if(joy->buttons[PS3_BUTTON_REAR_RIGHT_2])
     vel_ += acc_;
   if(joy->buttons[PS3_BUTTON_REAR_RIGHT_1])
     vel_ -= acc_;
   
-  if(vel_ > 1.3) vel_ = 1.3;
-  if(vel_ < -1.3) vel_ = -1.3;
+  // ensure maxima
+  if(vel_ > max_vel_)
+    vel_ = max_vel_;
+  if(vel_ < -max_vel_) 
+    vel_ = -max_vel_;
 
   rot_vel_srv.request.twist.angular.z = vel_;
   rot_vel_client_.call(rot_vel_srv);
   
-  uos_rotunit_snapshotter::RotunitSnapshotGoal goal;
+  // handle uos_rotunit_snapshotter scan command
   if(joy->buttons[PS3_BUTTON_ACTION_TRIANGLE]){
+    // set scan velocity and wait for 3 seconds
     rot_vel_srv.request.twist.angular.z = scan_vel_;
     rot_vel_client_.call(rot_vel_srv);
     ROS_INFO("start snapshot in 3 seconds...");
     ros::Duration(3.0).sleep();
-    ROS_INFO("... start scanning.");
+    
+    // call snapshotter action server
+    ROS_INFO("start snapshot...");
+    uos_rotunit_snapshotter::RotunitSnapshotGoal goal;
     goal.angle = 2 * M_PI;
-    // send a goal to the action
     ac.sendGoal(goal);
     bool finished_before_timeout =
-      ac.waitForResult(ros::Duration(30.0));
+      ac.waitForResult(ros::Duration(timeout_));
 
     if (finished_before_timeout){
       actionlib::SimpleClientGoalState state = ac.getState();
-      ROS_INFO("Action finished: %s",state.toString().c_str());
+      ROS_INFO("Snapshot action finished with the state: %s",state.toString().c_str());
     }
     else{
-      ROS_INFO("Action did not finish before the timeout.");
+      ROS_INFO("Snapshot action did not finish before the timeout of %f seconds.", timeout_);
     }
+
+    // set standard velocity and call velocity service
     rot_vel_srv.request.twist.angular.z = vel_;
     rot_vel_client_.call(rot_vel_srv);
   }
 }
 
 int main(int args, char**argv){
-  ros::init(args, argv, "uos_rotunit_snapshotter_ps3joy");
+  ros::init(args, argv, "uos_rotunit_teleop_ps3joy");
   ros::NodeHandle nh;
   RotunitTeleopPS3Joy teleop(nh);
   ros::spin();

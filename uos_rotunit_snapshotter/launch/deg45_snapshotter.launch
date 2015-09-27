@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="continuous" default="false"/>
+  <node pkg="uos_rotunit_snapshotter" type="uos_rotunit_snapshotter"
+    name="deg45_snapshotter" output="screen">
+    <param name="continuous" value="$(arg continuous)"/>
+    <param name="rotation_angle" value="0.78539816339" />
+  </node>
+</launch>

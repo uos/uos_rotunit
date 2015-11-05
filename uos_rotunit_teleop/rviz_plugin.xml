@@ -1,0 +1,9 @@
+<library path="lib/libuos_rotunit_teleop_rviz_scan_tool">
+  <class name="uos_rotunit_teleop/RvizScanTool"
+    type="uos_rotunit_teleop::RvizScanTool"
+    base_class_type="rviz::Tool">
+    <description>
+      Start a scan from RViz.
+    </description>
+  </class>
+</library>

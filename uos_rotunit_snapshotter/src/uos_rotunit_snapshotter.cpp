@@ -62,17 +62,19 @@ int RotunitSnapshotter::getIndex(const sensor_msgs::JointState::ConstPtr &jointS
 }
 
 bool RotunitSnapshotter::checkIfFinished(double current_rot, ros::Time stamp){
+   double current_rot_norm = norm2PI(current_rot);
+	
   if(!started_){
-    begin_angle = current_rot;
+    begin_angle = current_rot_norm;
     begin_stamp = stamp;
-    previous_rot = current_rot;
+    previous_rot = current_rot_norm;
     residual_rot = rotation_angle;
-    destination_rot = norm2PI(current_rot + rotation_angle);
+    destination_rot = norm2PI(current_rot_norm + rotation_angle);
     started_ = true;
     ROS_INFO("Start snapshot at %f degree, the destination angle is %f, angle aim is %f",
-      current_rot * 180.0 / M_PI, rotation_angle * 180.0 / M_PI, destination_rot * 180.0 / M_PI);
+      current_rot_norm * 180.0 / M_PI, rotation_angle * 180.0 / M_PI, destination_rot * 180.0 / M_PI);
   }
-  double diff = norm2PI(current_rot - previous_rot);
+  double diff = norm2PI(current_rot_norm - previous_rot);
   if(diff > M_PI / 180.0 && diff <= MAX_STEP_SIZE)
     residual_rot -= diff;
 
@@ -80,13 +82,13 @@ bool RotunitSnapshotter::checkIfFinished(double current_rot, ros::Time stamp){
 
   if(residual_rot <= 0)
   {
-    end_angle = current_rot;
+    end_angle = current_rot_norm;
     end_stamp = stamp;
     started_ = false;
-    ROS_INFO("Finished snapshot at %f degree!", current_rot * 180.0 / M_PI);
+    ROS_INFO("Finished snapshot at %f degree!", current_rot_norm * 180.0 / M_PI);
     return true;
   }
-  previous_rot = current_rot;
+  previous_rot = current_rot_norm;
   return false;
 }
 

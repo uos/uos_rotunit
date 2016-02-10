@@ -52,7 +52,7 @@ add_dependencies(uos_rotunit_teleop_ps3joy ${catkin_EXPORTED_TARGETS})
 install(TARGETS
   uos_rotunit_teleop_ps3joy
   uos_rotunit_teleop_rviz_scan_tool
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 install(DIRECTORY launch/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch)

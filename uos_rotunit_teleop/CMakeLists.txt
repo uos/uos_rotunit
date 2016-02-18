@@ -44,6 +44,7 @@ qt4_wrap_cpp(MOC_FILES
 
 add_library(uos_rotunit_teleop_rviz_scan_tool src/rviz_scan_tool.cpp ${MOC_FILES})
 target_link_libraries(uos_rotunit_teleop_rviz_scan_tool ${QT_LIBRARIES} ${catkin_LIBRARIES})
+add_dependencies(uos_rotunit_teleop_rviz_scan_tool ${catkin_EXPORTED_TARGETS})
 
 add_executable(uos_rotunit_teleop_ps3joy src/uos_rotunit_teleop_ps3joy.cpp)
 target_link_libraries(uos_rotunit_teleop_ps3joy ${catkin_LIBRARIES})

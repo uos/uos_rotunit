@@ -64,6 +64,8 @@ void RotunitTeleopPS3Joy::PS3Callback(const sensor_msgs::Joy::ConstPtr &joy){
   
   // handle uos_rotunit_snapshotter scan command
   if(joy->buttons[PS3_BUTTON_ACTION_TRIANGLE]){
+    sound_client_.say("Starting scan");
+
     // set scan velocity and wait for 3 seconds
     rot_vel_srv.request.twist.angular.z = scan_vel_;
     rot_vel_client_.call(rot_vel_srv);
@@ -81,9 +83,11 @@ void RotunitTeleopPS3Joy::PS3Callback(const sensor_msgs::Joy::ConstPtr &joy){
     if (finished_before_timeout){
       actionlib::SimpleClientGoalState state = ac.getState();
       ROS_INFO("Snapshot action finished with the state: %s",state.toString().c_str());
+      sound_client_.say("Finished scan");
     }
     else{
       ROS_INFO("Snapshot action did not finish before the timeout of %f seconds.", timeout_);
+      sound_client_.say("Scan didn't finish in time");
     }
 
     // set standard velocity and call velocity service

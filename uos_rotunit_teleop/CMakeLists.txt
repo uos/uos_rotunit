@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   uos_rotunit_snapshotter
   uos_rotunit_driver
   rviz
+  sound_play
 )
 
 
@@ -32,6 +33,7 @@ CATKIN_DEPENDS
   uos_rotunit_snapshotter
   uos_rotunit_driver
   rviz
+  sound_play
 DEPENDS
   Qt4
 )

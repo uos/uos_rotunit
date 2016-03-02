@@ -34,6 +34,7 @@
 #include <actionlib/client/terminal_state.h>
 #include <uos_rotunit_snapshotter/RotunitSnapshotAction.h>
 #include <uos_rotunit_driver/RotVelSrv.h>
+#include <sound_play/sound_play.h>
 
 #define PS3_BUTTON_SELECT            0
 #define PS3_BUTTON_STICK_LEFT        1
@@ -93,6 +94,7 @@ class RotunitTeleopPS3Joy{
     double max_vel_;
     double timeout_;
     actionlib::SimpleActionClient<uos_rotunit_snapshotter::RotunitSnapshotAction> ac;
+    sound_play::SoundClient sound_client_;
 };
 
 
